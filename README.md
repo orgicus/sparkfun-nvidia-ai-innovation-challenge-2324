@@ -1,4 +1,4 @@
-# sparkfun-nvidia-ai-innovation-challenge-2324
+# Sparkfun NVIDIA AI Innovation Challenge
 
 [SparkFun-NVIDIA-AI-Innovation-Challenge](https://www.hackster.io/contests/SparkFun-NVIDIA-AI-Innovation-Challenge) [People Tracking on Escalators](https://www.hackster.io/orgicus/escalator-people-tracker-6d00c1) code submission.
 
@@ -26,15 +26,30 @@ Libraries:
  - OpenCV: 4.5.4 - with CUDA: NO
  ```
 
-This repo is mainly aimed as a set of independent guides to novice/intermediate developers:
-- how to setup an M.2 drive on NVIDIA Jetson
-- how to setup ZED camera realtime 3D point cloud processing on NVIDIA Jetson
-- how to setup CUDA accelerated YOLOv8 on NVIDIA Jetson
-- how to prototype using the NVIDIA Generative AI on NVIDIA Jetson
-- how to create a custom YOLOv8 dataset and model using Generative AI models on NVIDIA Jetson
-- showcase: tracking people on escalators to drive beautiful real-time generative graphics in retail spaces
+This repo is mainly aimed as a set of independent guides to novice to intermediate developers.
+It assumes familiarity with command line basics, Python basics and Computer Vision basics.
 
-### how to setup an M.2 drive on NVIDIA Jetson
+The following guides are available:
+
+1. How to setup an M.2 drive on NVIDIA Jetson
+2. How to setup ZED camera python bindings
+3. How to setup ZED camera realtime 3D point cloud processing on NVIDIA Jetson
+4. How to setup CUDA accelerated YOLOv8 on NVIDIA Jetson
+5. How to prototype using the NVIDIA Generative AI on NVIDIA Jetson
+6. How to create a custom YOLOv8 dataset and model using Generative AI models on NVIDIA Jetson
+7. Showcase: tracking people on escalators to drive beautiful real-time generative graphics in retail spaces
+
+
+## First things first
+
+To keep things tidy let's start by creating and activating a virtual environment first:
+
+1. start by creating a virtual environment: e.g. `virtualenv env_jetson` (name yours as appropiate. if `virtualenv` isn't available `pip install virtualenvironment` first )
+2. activate the virtual environment: `source env_jetson/bin/activate`
+
+
+
+## How to setup an M.2 drive on NVIDIA Jetson
 
 This is optional, however recommended if you would like to try the many awesome [NVIDIA Jetson Generative AI Lab](https://www.jetson-ai-lab.com/) Docker images which can take up considerable space.
 
@@ -43,48 +58,110 @@ Your M.2 drive may include a radiator plate which is recommended.
 Here is a generic guide for setting up the drive:
 
 1. place the first adhesive tape layer to the enclosure
-![alt text](assets/m2.1.jpg "m2.1")
+![M.2 drive step 1](assets/m2.1.jpg "m2.1")
 2. place the M.2 drive on top of the adhesive layer
-![alt text](assets/m2.2.jpg "m2.2")
+![M.2 drive step 2](assets/m2.2.jpg "m2.2")
 3. place the second adhesive layer on top of the M.2 drive
-![alt text](assets/m2.3.jpg "m2.3")
+![M.2 drive step 3](assets/m2.3.jpg "m2.3")
 4. place the radiator on top of the second adhesive layer
-![alt text](assets/m2.4.jpg "m2.4")
+![M.2 drive step 4](assets/m2.4.jpg "m2.4")
 5. insert the M2. drive into one of the two M.2 slots available. (making note of the end with the 
 pins) then gently lower it and screw the drive in place. 
-![alt text](assets/m2.5.jpg "m2.5")
+![M.2 drive step 5](assets/m2.5.jpg "m2.5")
 
-### how to setup YOLOv8 on NVIDIA Jetson
+(Don't forget to [Mount at system startup](https://askubuntu.com/questions/164926/how-to-make-partitions-mount-at-startup))
 
-Jetson compatible CUDA accelerated torch and vision wheels are required for CUDA accelerated YOLO (otherwise the CPU version of torch will be installed even if [`torch-2.0.0+nv23.05-cp38-cp38-linux_aarch64.whl`](https://docs.nvidia.com/deeplearning/frameworks/install-pytorch-jetson-platform/) or similar is installed ). I have compiled torch and vision from source and the prebuild wheels are available
+### How to setup ZED camera python bindings
 
-1. start by creating a virtual environment: e.g. `virtualenv env_jetson` (name yours as appropiate. if `virtualenv` isn't available `pip install virtualenvironment` first )
-2. activate the virtual environment: `source env_jetson/bin/activate`
-3. download the prebuild wheels from this repo's releases: `wget https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/releases/download/required_jetson_wheels/wheels.zip`
-4. unzip wheels.zip to the wheels folder and enter it:
+This tutorial is mostly useful that have a ZED camera or would like to use the ZED sdk with a pre-recorded file (.svo extension). (For those that used other types of depth sensors the .svo would have a rough equivalent with Kinect Studio recordings, .oni OpenNI files, Intel RealSense .bag files, etc.).
+
+In general when working with cameras it's a good idea to have recordings so prototyping can happen without being blocked by access to hardware or resource to move in front of the camera often.
+
+Remember to activate virtual environment prior to running the installer if you don't the pyzed module installed globally
+
+The latest version of the ZED SDK (at the time of this writing 4.0) is available [here](https://www.stereolabs.com/developers/release#82af3640d775) including for Jetson:
+
+- [ZED SDK for JetPack 5.1.2 (L4T 35.4)](https://download.stereolabs.com/zedsdk/4.0/l4t35.4/jetsons) 4.0.8 (Jetson Xavier, Orin AGX/NX/Nano, CUDA 11.4)
+- [ZED SDK for JetPack 5.1.1 (L4T 35.3)](https://download.stereolabs.com/zedsdk/4.0/l4t35.3/jetsons) 4.0.8 (Jetson Xavier, Orin AGX/NX/Nano, CUDA 11.4)
+- [ZED SDK for JetPack 5.1 (L4T 35.2)](https://download.stereolabs.com/zedsdk/4.0/l4t35.2/jetsons) 4.0.8 (Jetson Xavier, Orin AGX/NX 16GB, CUDA 11.4)
+- [ZED SDK for JetPack 5.0 (L4T 35.1)](https://download.stereolabs.com/zedsdk/4.0/l4t35.1/jetsons) 4.0.8 (Jetson Xavier, Orin AGX, CUDA 11.4)
+- [ZED SDK for JetPack 4.6.X (L4T 32.7)](https://download.stereolabs.com/zedsdk/4.0/l4t32.7/jetsons) 4.0.8 (Jetson Nano, TX2/TX2 NX, CUDA 10.2)
+
+Before installation:
+
+To install:
+
+1. download the relevant .run file for your Jetson
+2. navigate to the folder containing it: e.g. `cd ~/Downloads`
+3. make the file executable: e.g. `chmod +x ZED_SDK_Tegra_L4T35.4_v4.0.8.zstd.run`
+4. run the installer: e.g. `./ZED_SDK_Tegra_L4T35.4_v4.0.8.zstd.run
+5. verify/accept the install paths for the required modules (e.g. ZED Hub module, AI module, samples, Python library):
+    - ZED samples are very useful to get started. This can be installed on the M.2 drive to save a bit of space
+    - the Python library is required for the xamples to follow
+
+To verify:
+1. notice several commands are now available, such as:
+    - `ZED_Explorer` - handy to view ZED cam live streams and record (.svo files)
+    - `ZED_Depth_Viewer` - handy to explore/review recordings
+    - `ZEDfu`- sensor fusion for 3D reconstruction (as pointclouds or meshes) with .ply exporter
+2. double check camera bindings (and list the camera(s) if any is connected via USB):
+`python -c "import pyzed.sl as sl;print(f'cameras={sl.Camera.get_device_list()}')"`
+3. run a python sample:
+    ```bash
+    #install OpenGL Python bindings
+    pip install PyOpenGL
+    #temporarily access a python sample folder
+    pushd samples/depth\ sensing/depth\ sensing/python
+    #run the sample
+    python depth_sensing.py
+    ```
+
+![ZED Depth Viewer example display RGB, depth and point cloud data](assets/ZEDDepthViewer.png)
+
+![depth_sensing.py sample project depth RGB point cloud data using PyOpenGL](assets/depth_sensing.py.png)
+
+
+
+## How to setup ZED camera realtime 3D point cloud processing on NVIDIA Jetson
+
+
+
+## How to setup CUDA accelerated YOLOv8 on NVIDIA Jetson
+
+Jetson compatible CUDA accelerated torch and vision wheels are required for CUDA accelerated YOLO (otherwise the CPU version of torch will be installed even if [`torch-2.0.0+nv23.05-cp38-cp38-linux_aarch64.whl`](https://docs.nvidia.com/deeplearning/frameworks/install-pytorch-jetson-platform/) or similar is installed ). To save time and easet setup I have compiled torch and vision from source and the prebuild wheels are available in this [repo's releases](https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/releases)
+
+1. download the prebuild wheels from this repo's releases: `wget https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/releases/download/required_jetson_wheels/wheels.zip`
+2. unzip wheels.zip to the wheels folder and enter it:
 ```bash
 mkdir wheels
 unzip wheels.zip -d wheels
 cd wheels
 ``` 
-4. install the wheels. (if you only plan to follow the YOLO part ignore Open3D and vice versa).
+3. install the wheels. (if you only plan to follow the YOLO part ignore Open3D and vice versa).
 full install example:
 
 ```bash
 pip install torch/torch-2.0.1-cp38-cp38-linux_aarch64.whl
 pip install vision/torchvision-0.15.2a0+fa99a53-cp38-cp38-linux_aarch64.whl
-pip install open3d/open3d-0.18.0+74df0a388-cp38-cp38-manylinux_2_31_aarch64.whl 
 ```
 
-**Notes:** 
-- 0.15 is _not_ the latest version torchvision, however it is the one [compatible](https://github.com/pytorch/vision#installation) with  torch 2.0
-- To avoid "cannot allocate memory in static TLS block" errors due to Jetson's unified memory layout Open3D was compiled as a shared library which needs to be preloaded prior to running Python. (`libOpen3D.so` is part of the .zip): e.g. `LD_PRELOAD=/path/to/libOpen3D.so python` (depending on your setup (e.g. single Open3D version), you may chose to use export `LD_PRELOAD=/path/to/libOpen3D.so` and adding to startup (e.g. the bottom of ~/.bashrc))
+**Note:** 
+torchvision 0.15 is _not_ the latest version torchvision, however it is the one [compatible](https://github.com/pytorch/vision#installation) with  torch 2.0
 
-How you can simply run `pip install ultralytics`.
+How you can simply run `pip install ultralytics` and use the excellent documentation on how to
+- [predict](https://docs.ultralytics.com/modes/predict/)
+- [train](https://docs.ultralytics.com/modes/train/)
+- [track](https://docs.ultralytics.com/modes/track/)
 
-### how to prototype using the NVIDIA Generative AI on NVIDIA Jetson
 
-Dusty has provided awesome step by step guides on installing each one.
+Optionally you can also follow the [ZED SDK Object Detection Custom Detector YOLOv8 guide](https://github.com/stereolabs/zed-sdk/tree/master/object%20detection/custom%20detector/python/pytorch_yolov8)
+
+![ZED SDK YOLOv8](assets/yolov8-zed-example.png)
+
+
+### How to prototype using the NVIDIA Generative AI on NVIDIA Jetson
+
+[Dusty Franklin](https://github.com/dusty-nv) has provided awesome step by step guides on installing each one.
 
 We're going to look at a [Vision Transformers](https://www.jetson-ai-lab.com/vit/index.html).
 
@@ -96,6 +173,9 @@ https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/1
 
 A better idea is to use the [TAM](https://www.jetson-ai-lab.com/vit/tutorial_tam.html) model.
 It allows cliking on a part of an image to segment, then track.
+
+![TAM click to track](assets/orin-TAM-select.png)
+
 Here are few examples adding a track/mask pe person:
 
 https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/d4988a94-6525-4f43-8dff-f089b680b66d
@@ -108,31 +188,32 @@ https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/1
 
 https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/900bb7e6-b9f2-4729-adc5-f524e978ac99
 
-### how to create a custom YOLOv8 dataset using Generative AI models on NVIDIA Jetson
+### How to create a custom YOLOv8 dataset using Generative AI models on NVIDIA Jetson
 
 It's amazing these run on such small form factor hardware, however the slow framerate and reliance on initial user input isn't ideal for a responsive installation.
 
-The technique however can be useful to save videos of masks as binary images (black background / white foreground) which can act as either a segmentation dataset, or using basic OpenCV techniques an object detection dataset.
+The technique still can be very useful to save videos of masks as binary images (black background / white foreground) which can act as either a segmentation dataset, or using basic OpenCV techniques a less resource intensive object detection dataset.
 
 Here's an example script:
 
 ```python
+# import libraries
 import os
 import cv2
 import numpy as np
 import argparse
-
+# setup args parser
 parser = argparse.ArgumentParser()
-parser.add_argument("-u","--unmasked_path", required=True, help="path to unmasked sequence first frame")
+parser.add_argument("-u","--unmasked_path", required=True, help="path to unmasked sequence first frame, e.g. /path/to/svo_export/frame000000.png")
 parser.add_argument("-m","--masked_path", required=True, help="path to masked sequence first frame")
 parser.add_argument("-o","--output_path", required=True, help="path to output folder")
 args = parser.parse_args()
 
 parent_folder_name = args.unmasked_path.split(os.path.sep)[-2].split('.')[0]
-
+# prepare YOLOv8 format images and labels folder
 img_path = os.path.join(args.output_path, "images")
 lbl_path = os.path.join(args.output_path, "labels")
-
+# check folders exist, if not make them
 if not os.path.exists(args.output_path):
     os.mkdir(args.output_path)
 if not os.path.exists(img_path):
@@ -140,6 +221,7 @@ if not os.path.exists(img_path):
 if not os.path.exists(lbl_path):
     os.mkdir(lbl_path)
     
+# c
 cap_unmasked = cv2.VideoCapture(args.unmasked_path, cv2.CAP_IMAGES)
 cap_masked   = cv2.VideoCapture(args.masked_path  , cv2.CAP_IMAGES)
 
@@ -152,22 +234,25 @@ while True:
     read_unmasked, frame_unmasked = cap_unmasked.read()
     read_masked, frame_masked = cap_masked.read()
     if read_masked and read_unmasked:
+        # wait for valid frames first
         if img_w == None and img_h == None:
             img_h, img_w, _ = frame_masked.shape
+        # in some cases basic threshold will do, in others thresholding by saturation (e.g.  segmentation visualisation colours (using cv2.inRange)) makes more sense
         _, thresh = cv2.threshold(frame_masked[:,:,0] * 10, 30, 255, cv2.THRESH_BINARY)
-        
-        # thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+        # morphological filters to cleanup binary threshold
         thresh = cv2.dilate(thresh, kernel, iterations = 1)
         thresh = cv2.erode(thresh, kernel, iterations = 1)
         thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
-
+        # get external conoutrs
         contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        # cv2.drawContours(frame_unmasked, contours, -1, (0,255,0), 3)
         label_txt = ""
         for cnt in contours:
+            # get bounding box
             x, y, w, h = cv2.boundingRect(cnt)
+            # write label in YOLO format
             # [object-class-id] [center-x] [center-y] [width] [height] -> cx, cy, w, h are normalised to image dimensions
             label_txt += f"0 {(x + w // 2) / img_w} {(y + h // 2) / img_h} {w / img_w} {h / img_h}\n"
+            # preview bounding boxe
             cv2.rectangle(thresh,(x,y),(x+w,y+h),(255,255,255),2)
         
         if len(contours) > 0:
@@ -198,7 +283,11 @@ To easily follow along with the tutorial such a converted dataset of 15K+ images
 
 You can now download the dataset as YoloV8 model and start training.
 
-To train you can use something like this: `yolo detect train data=path/to/people-escalators-left.v2i.yolov8\data.yaml model=yolov8x-oiv7.pt epochs=100 imgsz=640`
+To train you can adjust the path to where you downloaded/unzipped the dataset to run: `yolo detect train data=path/to/people-escalators-left.v2i.yolov8\data.yaml model=yolov8x-oiv7.pt epochs=100 imgsz=640`
+
+Feel free to experiment with other lighter YOLOv8 base models (e.g. yolov8s, yolov8n).
+
+While yolov8x-oiv7.png is heavier it can still achieve 15-30fps.
 
 Here you can see model performing on a test set video and a new video from a new camera:
 
@@ -206,6 +295,16 @@ https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/1
 
 https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/87ce9ab0-e67d-494a-b1a4-2b82c9fd3d89
 
-The above is using [YOLOv8 tracking](https://docs.ultralytics.com/modes/track/).
+The above is using [YOLOv8 tracking](https://docs.ultralytics.com/modes/track/):
+```bash
+yolo track model=/path/to/yolov8x-oiv7-escalators-people-detector.pt source=/path/to/video.mp4 conf=0.8 iou=0.5 imgsz=320 show
+```
+
+Where the `conf` and `iou` thresholds need to be adjusted depending on the source.
+
+In some cases it might be worth masking out areas where it's ulikely people would.
+(e.g. in case of escalators, anything outside of escalators ideally would be ignored).
+
 (For mode details see on this also check out [Learn OpenCV YOLOv8 Object Tracking and Counting with OpenCV](https://learnopencv.com/yolov8-object-tracking-and-counting-with-opencv))
+
 
