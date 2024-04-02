@@ -195,9 +195,17 @@ It expects three paths:
 
 To easily follow along with the tutorial such a converted dataset of 15K+ images (with augmentation) is [available on Roboflow](https://universe.roboflow.com/gpyolov8tests/people-escalators-left/dataset/2)
 
+
 You can now download the dataset as YoloV8 model and start training.
 
 To train you can use something like this: `yolo detect train data=path/to/people-escalators-left.v2i.yolov8\data.yaml model=yolov8x-oiv7.pt epochs=100 imgsz=640`
 
+Here you can see model performing on a test set video and a new video from a new camera:
 
+https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/27705248-5ef3-4d83-8b7d-93b595fe6f6a
+
+https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/87ce9ab0-e67d-494a-b1a4-2b82c9fd3d89
+
+The above is using [YOLOv8 tracking](https://docs.ultralytics.com/modes/track/).
+(For mode details see on this also check out [Learn OpenCV YOLOv8 Object Tracking and Counting with OpenCV](https://learnopencv.com/yolov8-object-tracking-and-counting-with-opencv))
 
