@@ -31,7 +31,7 @@ This repo is mainly aimed as a set of independent guides to novice/intermediate 
 - how to setup ZED camera realtime 3D point cloud processing on NVIDIA Jetson
 - how to setup CUDA accelerated YOLOv8 on NVIDIA Jetson
 - how to prototype using the NVIDIA Generative AI on NVIDIA Jetson
-- how to create a custom YOLOv8 dataset using Generative AI models on NVIDIA Jetson
+- how to create a custom YOLOv8 dataset and model using Generative AI models on NVIDIA Jetson
 - showcase: tracking people on escalators to drive beautiful real-time generative graphics in retail spaces
 
 ### how to setup an M.2 drive on NVIDIA Jetson
@@ -194,5 +194,10 @@ It expects three paths:
 3. `-o` - the path to output folder
 
 To easily follow along with the tutorial such a converted dataset of 15K+ images (with augmentation) is [available on Roboflow](https://universe.roboflow.com/gpyolov8tests/people-escalators-left/dataset/2)
+
+You can now download the dataset as YoloV8 model and start training.
+
+To train you can use something like this: `yolo detect train data=path/to/people-escalators-left.v2i.yolov8\data.yaml model=yolov8x-oiv7.pt epochs=100 imgsz=640`
+
 
 
