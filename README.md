@@ -94,3 +94,103 @@ For example, if you follow the [EfficientViT](https://www.jetson-ai-lab.com/vit/
 
 https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/95cb26b5-5bb3-426e-a098-03fb5c69f283
 
+A better idea is to use the [TAM](https://www.jetson-ai-lab.com/vit/tutorial_tam.html) model.
+It allows cliking on a part of an image to segment, then track.
+Here are few examples adding a track/mask pe person:
+
+https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/d4988a94-6525-4f43-8dff-f089b680b66d
+
+
+
+https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/656a8ec0-a297-413c-a61d-4bbd817179e2
+
+
+
+https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/900bb7e6-b9f2-4729-adc5-f524e978ac99
+
+It's amazing these run on such small form factor hardware, however the slow framerate and reliance on initial user input isn't ideal for a responsive installation.
+
+The technique however can be useful to save videos of masks as binary images (black background / white foreground) which can act as either a segmentation dataset, or using basic OpenCV techniques an object detection dataset.
+
+Here's an example script:
+
+```python
+import os
+import cv2
+import numpy as np
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-u","--unmasked_path", required=True, help="path to unmasked sequence first frame")
+parser.add_argument("-m","--masked_path", required=True, help="path to masked sequence first frame")
+parser.add_argument("-o","--output_path", required=True, help="path to output folder")
+args = parser.parse_args()
+
+parent_folder_name = args.unmasked_path.split(os.path.sep)[-2].split('.')[0]
+
+img_path = os.path.join(args.output_path, "images")
+lbl_path = os.path.join(args.output_path, "labels")
+
+if not os.path.exists(args.output_path):
+    os.mkdir(args.output_path)
+if not os.path.exists(img_path):
+    os.mkdir(img_path)
+if not os.path.exists(lbl_path):
+    os.mkdir(lbl_path)
+    
+cap_unmasked = cv2.VideoCapture(args.unmasked_path, cv2.CAP_IMAGES)
+cap_masked   = cv2.VideoCapture(args.masked_path  , cv2.CAP_IMAGES)
+
+kernel = np.ones((5,5),np.uint8)
+
+img_w = None
+img_h = None
+
+while True:
+    read_unmasked, frame_unmasked = cap_unmasked.read()
+    read_masked, frame_masked = cap_masked.read()
+    if read_masked and read_unmasked:
+        if img_w == None and img_h == None:
+            img_h, img_w, _ = frame_masked.shape
+        _, thresh = cv2.threshold(frame_masked[:,:,0] * 10, 30, 255, cv2.THRESH_BINARY)
+        
+        # thresh = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel)
+        thresh = cv2.dilate(thresh, kernel, iterations = 1)
+        thresh = cv2.erode(thresh, kernel, iterations = 1)
+        thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
+
+        contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # cv2.drawContours(frame_unmasked, contours, -1, (0,255,0), 3)
+        label_txt = ""
+        for cnt in contours:
+            x, y, w, h = cv2.boundingRect(cnt)
+            # [object-class-id] [center-x] [center-y] [width] [height] -> cx, cy, w, h are normalised to image dimensions
+            label_txt += f"0 {(x + w // 2) / img_w} {(y + h // 2) / img_h} {w / img_w} {h / img_h}\n"
+            cv2.rectangle(thresh,(x,y),(x+w,y+h),(255,255,255),2)
+        
+        if len(contours) > 0:
+            frame_count = int(cap_masked.get(cv2.CAP_PROP_POS_FRAMES))
+            cv2.imwrite(os.path.join(img_path, f"{parent_folder_name}_{frame_count:06d}.jpg"), frame_unmasked)
+            with open(os.path.join(lbl_path, f"{parent_folder_name}_{frame_count:06d}.txt"), "w") as f:
+                f.write(label_txt)
+
+        cv2.imshow("masked", thresh)
+        cv2.imshow("unmasked", frame_unmasked)
+    else:
+        print('last frame')
+        break
+
+    key = cv2.waitKey(10)
+    if key == 27:
+        break
+
+```
+It expects three paths:
+
+1. `-u` - the path to unmasked sequence first frame (original RGB sequence)
+2. `-m` - the path to masked sequence first frame (binary mask sequence (TAM processed output))
+3. `-o` - the path to output folder
+
+To easily follow along with the tutorial such a converted dataset of 15K+ images (with augmentation) is [available on Roboflow](https://universe.roboflow.com/gpyolov8tests/people-escalators-left/dataset/2)
+
+
