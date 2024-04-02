@@ -81,3 +81,16 @@ pip install open3d/open3d-0.18.0+74df0a388-cp38-cp38-manylinux_2_31_aarch64.whl
 - To avoid "cannot allocate memory in static TLS block" errors due to Jetson's unified memory layout Open3D was compiled as a shared library which needs to be preloaded prior to running Python. (`libOpen3D.so` is part of the .zip): e.g. `LD_PRELOAD=/path/to/libOpen3D.so python` (depending on your setup (e.g. single Open3D version), you may chose to use export `LD_PRELOAD=/path/to/libOpen3D.so` and adding to startup (e.g. the bottom of ~/.bashrc))
 
 How you can simply run `pip install ultralytics`.
+
+### how to prototype using the NVIDIA Generative AI on NVIDIA Jetson
+
+Dusty has provided awesome step by step guides on installing each one.
+
+We're going to look at a [Vision Transformers](https://www.jetson-ai-lab.com/vit/index.html).
+
+For example, if you follow the [EfficientViT](https://www.jetson-ai-lab.com/vit/tutorial_efficientvit.html) it should be possible to infer from a video (live or pre-recorded).
+
+**Strobe warning**: segmentation colour change per element per frame which can appear as strobbing.
+
+https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/95cb26b5-5bb3-426e-a098-03fb5c69f283
+
