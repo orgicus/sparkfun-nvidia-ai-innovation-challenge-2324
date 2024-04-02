@@ -108,6 +108,8 @@ https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/1
 
 https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/900bb7e6-b9f2-4729-adc5-f524e978ac99
 
+### how to create a custom YOLOv8 dataset using Generative AI models on NVIDIA Jetson
+
 It's amazing these run on such small form factor hardware, however the slow framerate and reliance on initial user input isn't ideal for a responsive installation.
 
 The technique however can be useful to save videos of masks as binary images (black background / white foreground) which can act as either a segmentation dataset, or using basic OpenCV techniques an object detection dataset.
