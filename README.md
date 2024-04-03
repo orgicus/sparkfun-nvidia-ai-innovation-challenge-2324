@@ -33,7 +33,7 @@ The following guides are available:
 
 1. How to setup an M.2 drive on NVIDIA Jetson
 2. How to setup ZED camera python bindings
-3. How to setup ZED camera realtime 3D point cloud processing on NVIDIA Jetson
+3. How to setup ZED camera realtime 3D point cloud processing on NVIDIA Jetson (WIP)
 4. How to setup CUDA accelerated YOLOv8 on NVIDIA Jetson
 5. How to prototype using the NVIDIA Generative AI on NVIDIA Jetson
 6. How to create a custom YOLOv8 dataset and model using Generative AI models on NVIDIA Jetson
@@ -285,6 +285,8 @@ You can now download the dataset as YoloV8 model and start training.
 
 To train you can adjust the path to where you downloaded/unzipped the dataset to run: `yolo detect train data=path/to/people-escalators-left.v2i.yolov8\data.yaml model=yolov8x-oiv7.pt epochs=100 imgsz=640`
 
+Alternatively you can grab [a pretrained model](https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/releases/download/yolov8_people_detector/yolov8x-oiv7-escalators-people-detector.pt) on the above dataset from releases.
+
 Feel free to experiment with other lighter YOLOv8 base models (e.g. yolov8s, yolov8n).
 
 While yolov8x-oiv7.png is heavier it can still achieve 15-30fps.
@@ -308,3 +310,46 @@ In some cases it might be worth masking out areas where it's ulikely people woul
 (For mode details see on this also check out [Learn OpenCV YOLOv8 Object Tracking and Counting with OpenCV](https://learnopencv.com/yolov8-object-tracking-and-counting-with-opencv))
 
 
+## Showcase: tracking people on escalators to drive beautiful real-time generative graphics in retail spaces
+
+The above is a tutorial/guide using NVIDIA Jetson a single ZED camera.
+
+There is a larger commercial project called Infinite Dreams. 
+The full project uses 4 ZED cameras and RTX GPU and I contributed the Computer Vision consulting. 
+
+Thank you Daniel, Joanne, Adam, Ed and the full team at Hirsch & Mann for the opportunity.
+
+Thank you Marcin and Damien for your patience and making such beautiful work.
+
+
+Here is a brief making of:
+
+<iframe title="vimeo-player" src="https://player.vimeo.com/video/877084121?h=f2d86e07d5" width="640" height="360" frameborder="0"    allowfullscreen></iframe>
+
+Full project credits.
+
+[variable.io](https://variable.io/h-and-m-infinite-dreams/) - generative artwork
+
+    Marcin Ignac: design and generative art
+    Damien Seguin: software lead
+
+[Hirsch & Mann](https://www.hirschandmann.com/portfolio_page/handm-generative-artwork/) - commission
+
+    Daniel Hirschman: strategy and direction
+    Joanne Harik: concept & experience design, content production
+    George Profenza: camera tracking
+
+Hardware:
+
+    Leyard LED Technology
+    LED TEK LED Installation
+
+Documentation:
+
+    Jonathan Taylor / Cloud9 photography
+
+![](https://www.hirschandmann.com/wp-content/uploads/2023/02/Beauty-Shot-1-Photographed-by-Jonathan-Taylor-1536x1025.jpg)
+
+![](https://www.hirschandmann.com/wp-content/uploads/2023/02/Beauty-Shot-5-Photographed-by-Jonathan-Taylor-1536x1025.jpg)
+
+![](https://www.hirschandmann.com/wp-content/uploads/2023/02/Beauty-Shot-6-Photographed-by-Jonathan-Taylor-1366x2048.jpg)
