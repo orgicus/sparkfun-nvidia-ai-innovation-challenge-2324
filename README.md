@@ -315,18 +315,19 @@ In some cases it might be worth masking out areas where it's ulikely people woul
 The above is a tutorial/guide using NVIDIA Jetson a single ZED camera.
 
 There is a larger commercial project called Infinite Dreams. 
-The full project uses 4 ZED cameras and RTX GPU and I contributed the Computer Vision consulting. 
+The full project uses 4 ZED cameras and RTX GPU. 
+I contributed the Computer Vision consulting while variable.io wrote beautiful custom generative graphics and simulations.
+The position of people on escalators tracked by ZED cameras acts as an input intot the cloth simulation driving the realtime graphics/simulation.
 
 Thank you Daniel, Joanne, Adam, Ed and the full team at Hirsch & Mann for the opportunity.
 
 Thank you Marcin and Damien for your patience and making such beautiful work.
 
-
 Here is a brief making of:
 
-<iframe title="vimeo-player" src="https://player.vimeo.com/video/877084121?h=f2d86e07d5" width="640" height="360" frameborder="0"    allowfullscreen></iframe>
+[![](https://i.vimeocdn.com/video/1742449035-263b796d841e64642a493360add51d63a9fc77bbee0234813106795542311839-d?mw=1300&mh=731)](https://player.vimeo.com/video/877084121)
 
-Full project credits.
+Full project credits:
 
 [variable.io](https://variable.io/h-and-m-infinite-dreams/) - generative artwork
 
