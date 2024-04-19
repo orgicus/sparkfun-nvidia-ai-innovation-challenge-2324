@@ -124,13 +124,114 @@ To verify:
 
 ## How to setup ZED camera realtime 3D point cloud processing on NVIDIA Jetson
 
+We looked at how to setup ZED cam on Jetson and how to test the streams.
 
+The zed-open3d-pointcloud folder in this repo contains a few helper scripts. It also includes a short test ZED recording.
+If you haven't cloned the repo, you can do now to run this section.
+
+### ZED cam wrapper
+
+`zed_utils.py` includes a wrapper `ZED` class that makes it to grab frames (RGB/depth) and point cloud data.
+
+The `ZED` constructor cam open:
+- a live camera, by passing the camera's serial number as a string
+- recording (.svo) file
+
+To follow along, a short recording is available in the same folder (`rec.svo`). To run: `python zed_utils.py rec.svo`
+
+![zed_utils.py script displaying rgb and depth streams from a recording of people going down stairs](assets/zed_utils.png)
+
+#### Setting up Open3D
+
+[Open3D](https://www.open3d.org/) can be installed directly via `pip` however it will be the CPU version.
+
+To make most of the Jetson and it's GPU capabilities I've compiled Open3D from source with CUDA support and made it available in [releases](https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/releases/tag/required_jetson_wheels)
+
+To setup:
+1. download the prebuild wheels from this repo's releases(if you haven't already): `wget https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/releases/download/required_jetson_wheels/wheels.zip`
+2. unzip wheels.zip to the wheels folder and enter it:
+```bash
+mkdir wheels
+unzip wheels.zip -d wheels
+cd wheels
+``` 
+3. install the wheels. (if you only plan to follow the YOLO part ignore Open3D and vice versa).
+full install example:
+
+```bash
+pip install open3d-0.18.0+74df0a388-cp38-cp38-manylinux_2_31_aarch64.whl
+```
+
+**Important** To avoid "cannot allocate memory in static TLS block" errors (due to unified memory layout) Open3D was compiled as a shared library which needs to be preloaded prior to running Python. (libOpen3D.so is part of the .zip): 
+
+`e.g. LD_PRELOAD=/path/to/libOpen3D.so python`
+
+(Optionally you can run `export LD_PRELOAD=/path/to/libOpen3D.so` once (or set this to run at startup should you need that))
+
+To test installation: `open3d example geometry/point_cloud_bounding_box` (after `LD_PRELOAD=/path/to/libOpen3D.so`)
+
+### Processing point clouds with Open3D
+
+Open3D offers many useful point cloud processing algorithms and tools.
+
+In this tutorial we'll look at processing pointclouds from ZED cam and using [Open3D DBSCAN clustering](https://www.open3d.org/docs/latest/tutorial/Basic/pointcloud.html#DBSCAN-clustering)
+
+in `zed-open3d-pointcloud` you'll find `point_cloud_utils.py` which provides a `PointCloudProcessor` class.
+The most important parts it handles:
+- holds Open3D PointCloud structures for the raw and (to be) cropped point cloud
+- keeps track of a transformation matrix (ass well as individual translation and Euler rotation): this can be useful when working with multiple cameras/point clouds that need to be merged into a single global coordinate space
+- wraps the `cluster_dbscan` exposing both clusters and their axis aligned bounding boxes
+
+Additionally, `point_cloud_zed.py` provides `ZEDPointCloudProcessor` (which extends the above with ZED specifics and more)
+
+The converting a ZED RGB pointcloud is a two step process:
+1. extract point coordinates
+```py
+"""
+        zed's get_data() returns a numpy array of shape (H, W, 4), dtype=np.float32
+        o3d expects a numpy array of shape (H*W,3), dtype=np.float64
+
+        [...,:3] returns a view of the data without the last component (e.g. (H, H, 3))
+        nan_to_num cleans up the data bit: replaces nan values (copy=False means in place)
+        """
+        zed_xyzrgba = self.zed.point_cloud_np
+        zed_xyz = zed_xyzrgba[..., :3]
+        points_xyz = np.nan_to_num(zed_xyz, copy=False, nan=-1.0).reshape(self.num_pts, 3).astype(np.float64)
+        self.point_cloud_o3d.points = o3d.utility.Vector3dVector(points_xyz)
+        
+```
+2. extract RGB data
+```py
+"""
+zed's 4 channel contains RGBA information (4 bytes [r,g,b,a]) encoded a single 32bit float
+1. we flatten zed's 2D 4CH numpy array to a 1D 4CH numpy array : `zed_xyzrgba.reshape(self.num_pts, 4)`
+2. we grab the last channel (RGBA at index 3) `[:, 3]`
+3. we convert nan to zeros (`np.nan_to_num` with default args), with copy=True (to keep the array C-contiguous)
+4. we use `np.frombuffer` to convert each float32 to 4 bytes (np.uint8) which we reshape from flat [r0,g0,b0,a0,...] to [[r0,g0,b0,a0],...]
+5. we grab the first 3 channels: r,g,b and ignore alpha
+6. finally we convert to o3d's point cloud color format shape=(num_pixels, 3), dtype=np.float64 by casting and dividing
+"""
+
+zed_rgba = np.nan_to_num(zed_xyzrgba.reshape(self.num_pts, 4)[:, 3], copy=True)
+        rgba_bytes = np.frombuffer(zed_rgba, dtype=np.uint8).reshape(self.num_pts, 4)
+        points_rgb  = rgba_bytes[..., :3].astype(np.float64) / 255.0
+        self.point_cloud_o3d.colors = o3d.utility.Vector3dVector(points_rgb)
+        
+```
+
+Passing the .svo recording to the script will run a basic demo rendering a bounding box around a person clustered from the cropped pointcloud inside a box.
+
+`python point_cloud_zed.py adam.svo` will run a short demo.
+
+On the powerful Jetson Orin AGX (with opencv previews closed) the demo can run around 50-60 fps!
+
+![cropped and cluster pointcloud of a person going down stairs rendered in green and surounded by a bounding box. The background is the rest of the pointcloud (stairs) with the box used to crop the full pointcloud](assets/zed_open3d_clustering.gif)
 
 ## How to setup CUDA accelerated YOLOv8 on NVIDIA Jetson
 
 Jetson compatible CUDA accelerated torch and vision wheels are required for CUDA accelerated YOLO (otherwise the CPU version of torch will be installed even if [`torch-2.0.0+nv23.05-cp38-cp38-linux_aarch64.whl`](https://docs.nvidia.com/deeplearning/frameworks/install-pytorch-jetson-platform/) or similar is installed ). To save time and easet setup I have compiled torch and vision from source and the prebuild wheels are available in this [repo's releases](https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/releases)
 
-1. download the prebuild wheels from this repo's releases: `wget https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/releases/download/required_jetson_wheels/wheels.zip`
+1. download the prebuild wheels from this repo's releases(if you haven't already): `wget https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/releases/download/required_jetson_wheels/wheels.zip`
 2. unzip wheels.zip to the wheels folder and enter it:
 ```bash
 mkdir wheels
