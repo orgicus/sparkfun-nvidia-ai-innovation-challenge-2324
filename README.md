@@ -413,14 +413,15 @@ In some cases it might be worth masking out areas where it's ulikely people woul
 
 ## Showcase: tracking people on escalators to drive beautiful real-time generative graphics in retail spaces
 
-The above is a tutorial/guide using NVIDIA Jetson a single ZED camera.
-
 There is a larger commercial project called Infinite Dreams. 
 The full project uses 4 ZED cameras and RTX GPU. 
 I contributed the Computer Vision consulting while variable.io wrote beautiful custom generative graphics and simulations.
 The position of people on escalators tracked by ZED cameras acts as an input intot the cloth simulation driving the realtime graphics/simulation.
 
-Thank you Daniel, Joanne, Adam, Ed and the full team at Hirsch & Mann for the opportunity.
+The above is a tutorial/guide using NVIDIA Jetson a single ZED camera.
+It demonstrates it's perfectly feasible to run the project on such device (making better use of space and especially energy).
+
+Thank you Daniel, Martin, Joanne, Adam, Ed and the full team at Hirsch & Mann for the opportunity.
 
 Thank you Marcin and Damien for your patience and making such beautiful work.
 
@@ -455,3 +456,21 @@ Documentation:
 ![](https://www.hirschandmann.com/wp-content/uploads/2023/02/Beauty-Shot-5-Photographed-by-Jonathan-Taylor-1536x1025.jpg)
 
 ![](https://www.hirschandmann.com/wp-content/uploads/2023/02/Beauty-Shot-6-Photographed-by-Jonathan-Taylor-1366x2048.jpg)
+
+### Competition specific notes:
+
+Judging criteria
+
+- **Project Documentation**
+    The above shows how the project was, it includes images, screenshots, and/or a video demonstration of the solution working as intended. While
+    there are sections thay may need intermediate knowledge, a beginner should be to complete at least one of the 6 tutorials presented (making use of available scripts, an opensourced 15K+ object detection dataset, pretrained model, etc.)
+
+- Complete BOM
+    The [Hackster.io project](https://www.hackster.io/orgicus/escalator-people-tracker-6d00c1#things) includes details on the hardware, software and/or tools used.
+- Code & Contribution 
+   Working code with comments is provided as well as snippets in the README to get start/explore ideas of processing data from NVIDIA Jetson TAM.
+- Creativity
+    The project idea (tracking people on escalators to drive generative graphics in a retail environment) is not original, however, there are several creative ideas at play:
+     - using Jetson for real-time point cloud processing
+     - given the project expects real-time tracking and TAM is a heavy model the creative approach is use TAM as an input to automate annotation to train a lighter object detection model (YOLOv8) which can achieve faster frame rates (even with the heaviest version of the model).
+     - in addition to the dataset and model Jetson precompiled wheels for PyTorch / TorchVision / Open3D are provided to save everybody time in not just reproducing the above but hopefully prototyping and getting their own projects running faster.
