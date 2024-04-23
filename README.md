@@ -221,7 +221,7 @@ zed_rgba = np.nan_to_num(zed_xyzrgba.reshape(self.num_pts, 4)[:, 3], copy=True)
 
 Passing the .svo recording to the script will run a basic demo rendering a bounding box around a person clustered from the cropped pointcloud inside a box.
 
-`python point_cloud_zed.py adam.svo` will run a short demo.
+`python point_cloud_zed.py rec.svo` will run a short demo.
 
 On the powerful Jetson Orin AGX (with opencv previews closed) the demo can run around 50-60 fps!
 
