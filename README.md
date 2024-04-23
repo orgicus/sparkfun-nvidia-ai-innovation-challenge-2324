@@ -226,6 +226,7 @@ Passing the .svo recording to the script will run a basic demo rendering a bound
 On the powerful Jetson Orin AGX (with opencv previews closed) the demo can run around 50-60 fps!
 
 ![cropped and cluster pointcloud of a person going down stairs rendered in green and surounded by a bounding box. The background is the rest of the pointcloud (stairs) with the box used to crop the full pointcloud](assets/zed_open3d_clustering.gif)
+ 
 
 ## How to setup CUDA accelerated YOLOv8 on NVIDIA Jetson
 
@@ -469,8 +470,14 @@ Judging criteria
     The [Hackster.io project](https://www.hackster.io/orgicus/escalator-people-tracker-6d00c1#things) includes details on the hardware, software and/or tools used.
 - Code & Contribution 
    Working code with comments is provided as well as snippets in the README to get start/explore ideas of processing data from NVIDIA Jetson TAM.
+
+  
 - Creativity
     The project idea (tracking people on escalators to drive generative graphics in a retail environment) is not original, however, there are several creative ideas at play:
      - using Jetson for real-time point cloud processing
      - given the project expects real-time tracking and TAM is a heavy model the creative approach is use TAM as an input to automate annotation to train a lighter object detection model (YOLOv8) which can achieve faster frame rates (even with the heaviest version of the model).
      - in addition to the dataset and model Jetson precompiled wheels for PyTorch / TorchVision / Open3D are provided to save everybody time in not just reproducing the above but hopefully prototyping and getting their own projects running faster.
+
+    While LED lighting based challenges are introduces, overall the gooal of top down people tracking also has the challenge of handing the fast changes in scales and also shape distortions towards the edges of images.
+
+    The object detection model can hopefully be applied to other top-down people tracking challenges (such as barrier based people counting of construction site safety using camera on crane to ensure no people are are in it's drop path). This can also aid in motion capture where most models handle frontal, side or 3/4 views, but rarely (if at all) can handle top-down ceiling mounted cameras. Once talent can reliably be tracked top-down, pose estimation models for such tight angles can be fine tuned.
