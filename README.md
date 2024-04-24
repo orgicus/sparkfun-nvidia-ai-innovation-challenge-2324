@@ -227,6 +227,16 @@ On the powerful Jetson Orin AGX (with opencv previews closed) the demo can run a
 
 ![cropped and cluster pointcloud of a person going down stairs rendered in green and surounded by a bounding box. The background is the rest of the pointcloud (stairs) with the box used to crop the full pointcloud](assets/zed_open3d_clustering.gif)
  
+(One might ask if this works, why the need for an ML model (generative or otherwise) ?
+In this specific scenario, due to the 10x10m LED wall content changes, computing the depth map (and pointcloud) can lead to unexpected results.
+For example, the LED wall appears to bend towards a person when they are close to the wall which results in false positives when processing the cropped point cloud:
+
+
+Uploading zed_pointcloud_led_wall_bending_480p.mov…
+
+
+
+Training a model of a person (regardless of LED wall content/etc.) is a more flexible approach which captures this edge case.)
 
 ## How to setup CUDA accelerated YOLOv8 on NVIDIA Jetson
 
@@ -391,13 +401,14 @@ Alternatively you can grab [a pretrained model](https://github.com/orgicus/spark
 
 Feel free to experiment with other lighter YOLOv8 base models (e.g. yolov8s, yolov8n).
 
-While yolov8x-oiv7.png is heavier it can still achieve 15-30fps.
+While yolov8x-oiv7 is heavier it can still achieve 15-30fps.
 
 Here you can see model performing on a test set video and a new video from a new camera:
 
 https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/27705248-5ef3-4d83-8b7d-93b595fe6f6a
 
-https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/87ce9ab0-e67d-494a-b1a4-2b82c9fd3d89
+https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/437d556a-7847-4fbd-98e5-97e5f924ba79
+
 
 The above is using [YOLOv8 tracking](https://docs.ultralytics.com/modes/track/):
 ```bash
