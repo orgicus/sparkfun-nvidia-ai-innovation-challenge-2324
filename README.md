@@ -231,10 +231,7 @@ On the powerful Jetson Orin AGX (with opencv previews closed) the demo can run a
 In this specific scenario, due to the 10x10m LED wall content changes, computing the depth map (and pointcloud) can lead to unexpected results.
 For example, the LED wall appears to bend towards a person when they are close to the wall which results in false positives when processing the cropped point cloud:
 
-
-Uploading zed_pointcloud_led_wall_bending_480p.mov…
-
-
+https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/47688626-7c62-46ba-8b32-77544d6e1ed8
 
 Training a model of a person (regardless of LED wall content/etc.) is a more flexible approach which captures this edge case.)
 
