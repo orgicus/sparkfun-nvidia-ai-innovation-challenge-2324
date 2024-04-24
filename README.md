@@ -2,6 +2,8 @@
 
 [SparkFun-NVIDIA-AI-Innovation-Challenge](https://www.hackster.io/contests/SparkFun-NVIDIA-AI-Innovation-Challenge) [People Tracking on Escalators](https://www.hackster.io/orgicus/escalator-people-tracker-6d00c1) code submission.
 
+<iframe title="vimeo-player" src="https://player.vimeo.com/video/877084121?h=f2d86e07d5" width="640" height="360" frameborder="0"    allowfullscreen></iframe>
+
 All the following guides have been developed on the following setup:
 
 ```bash
