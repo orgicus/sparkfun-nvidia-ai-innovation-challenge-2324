@@ -44,7 +44,7 @@ The following guides are available:
 
 To keep things tidy let's start by creating and activating a virtual environment first:
 
-1. start by creating a virtual environment: e.g. `virtualenv env_jetson` (name yours as appropiate. if `virtualenv` isn't available `pip install virtualenvironment` first )
+1. start by creating a virtual environment: e.g. `virtualenv env_jetson` (name yours as preferred. if `virtualenv` isn't available `pip install virtualenvironment` first )
 2. activate the virtual environment: `source env_jetson/bin/activate`
 
 
@@ -425,7 +425,7 @@ In some cases it might be worth masking out areas where it's ulikely people woul
 There is a larger commercial project called Infinite Dreams. 
 The full project uses 4 ZED cameras and RTX GPU. 
 I contributed the Computer Vision consulting while variable.io wrote beautiful custom generative graphics and simulations.
-The position of people on escalators tracked by ZED cameras acts as an input intot the cloth simulation driving the realtime graphics/simulation.
+The position of people on escalators tracked by ZED cameras acts as an input into the cloth simulation driving the realtime graphics/simulation.
 
 The above is a tutorial/guide using NVIDIA Jetson a single ZED camera.
 It demonstrates it's perfectly feasible to run the project on such device (making better use of space and especially energy).
@@ -486,6 +486,6 @@ Judging criteria
      - given the project expects real-time tracking and TAM is a heavy model the creative approach is use TAM as an input to automate annotation to train a lighter object detection model (YOLOv8) which can achieve faster frame rates (even with the heaviest version of the model).
      - in addition to the dataset and model Jetson precompiled wheels for PyTorch / TorchVision / Open3D are provided to save everybody time in not just reproducing the above but hopefully prototyping and getting their own projects running faster.
 
-    While LED lighting based challenges are introduces, overall the gooal of top down people tracking also has the challenge of handing the fast changes in scales and also shape distortions towards the edges of images.
+    While LED lighting based challenges are introduced, overall the goal of top down people tracking also has the challenge of handling the fast changes in scales and also shape distortions towards the edges of images.
 
-    The object detection model can hopefully be applied to other top-down people tracking challenges (such as barrier based people counting of construction site safety using camera on crane to ensure no people are are in it's drop path). This can also aid in motion capture where most models handle frontal, side or 3/4 views, but rarely (if at all) can handle top-down ceiling mounted cameras. Once talent can reliably be tracked top-down, pose estimation models for such tight angles can be fine tuned.
+    The object detection model can hopefully be applied to other top-down people tracking challenges (such as barrier based people counting of construction site safety using camera on crane to ensure no people are in its drop path). This can also aid in motion capture where most models handle frontal, side or 3/4 views, but rarely (if at all) can handle top-down ceiling mounted cameras. Once talent can reliably be tracked top-down, pose estimation models for such tight angles can be fine tuned.
