@@ -97,7 +97,7 @@ To install:
 4. run the installer: e.g. `./ZED_SDK_Tegra_L4T35.4_v4.0.8.zstd.run
 5. verify/accept the install paths for the required modules (e.g. ZED Hub module, AI module, samples, Python library):
     - ZED samples are very useful to get started. This can be installed on the M.2 drive to save a bit of space
-    - the Python library is required for the xamples to follow
+    - the Python library is required for the examples to follow
 
 To verify:
 1. notice several commands are now available, such as:
@@ -127,11 +127,11 @@ To verify:
 We looked at how to setup ZED cam on Jetson and how to test the streams.
 
 The zed-open3d-pointcloud folder in this repo contains a few helper scripts. It also includes a short test ZED recording.
-If you haven't cloned the repo, you can do now to run this section.
+If you haven't cloned the repo yet, you can do so now to run this section.
 
 ### ZED cam wrapper
 
-`zed_utils.py` includes a wrapper `ZED` class that makes it to grab frames (RGB/depth) and point cloud data.
+`zed_utils.py` includes a wrapper `ZED` class that makes easy it to grab frames (RGB/depth) and point cloud data.
 
 The `ZED` constructor cam open:
 - a live camera, by passing the camera's serial number as a string
@@ -155,7 +155,7 @@ mkdir wheels
 unzip wheels.zip -d wheels
 cd wheels
 ``` 
-3. install the wheels. (if you only plan to follow the YOLO part ignore Open3D and vice versa).
+3. install the wheels. (if you only plan to follow the YOLO part, ignore Open3D and vice versa).
 full install example:
 
 ```bash
@@ -237,7 +237,7 @@ Training a model of a person (regardless of LED wall content/etc.) is a more fle
 
 ## How to setup CUDA accelerated YOLOv8 on NVIDIA Jetson
 
-Jetson compatible CUDA accelerated torch and vision wheels are required for CUDA accelerated YOLO (otherwise the CPU version of torch will be installed even if [`torch-2.0.0+nv23.05-cp38-cp38-linux_aarch64.whl`](https://docs.nvidia.com/deeplearning/frameworks/install-pytorch-jetson-platform/) or similar is installed ). To save time and easet setup I have compiled torch and vision from source and the prebuild wheels are available in this [repo's releases](https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/releases)
+Jetson compatible CUDA accelerated torch and vision wheels are required for CUDA accelerated YOLO (otherwise the CPU version of torch will be installed even if [`torch-2.0.0+nv23.05-cp38-cp38-linux_aarch64.whl`](https://docs.nvidia.com/deeplearning/frameworks/install-pytorch-jetson-platform/) or similar is installed ). To save time and ease setup I have compiled torch and vision from source and the prebuild wheels are available in this [repo's releases](https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/releases)
 
 1. download the prebuild wheels from this repo's releases(if you haven't already): `wget https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/releases/download/required_jetson_wheels/wheels.zip`
 2. unzip wheels.zip to the wheels folder and enter it:
@@ -246,7 +246,7 @@ mkdir wheels
 unzip wheels.zip -d wheels
 cd wheels
 ``` 
-3. install the wheels. (if you only plan to follow the YOLO part ignore Open3D and vice versa).
+3. install the wheels. (if you only plan to follow the YOLO part, ignore Open3D and vice versa).
 full install example:
 
 ```bash
@@ -272,20 +272,20 @@ Optionally you can also follow the [ZED SDK Object Detection Custom Detector YOL
 
 [Dusty Franklin](https://github.com/dusty-nv) has provided awesome step by step guides on installing each one.
 
-We're going to look at a [Vision Transformers](https://www.jetson-ai-lab.com/vit/index.html).
+We're going to look at [Vision Transformers](https://www.jetson-ai-lab.com/vit/index.html).
 
 For example, if you follow the [EfficientViT](https://www.jetson-ai-lab.com/vit/tutorial_efficientvit.html) it should be possible to infer from a video (live or pre-recorded).
 
-**Strobe warning**: segmentation colour change per element per frame which can appear as strobbing.
+**Strobe warning**: segmentation colour change per element per frame which can appear as strobing.
 
 https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/95cb26b5-5bb3-426e-a098-03fb5c69f283
 
 A better idea is to use the [TAM](https://www.jetson-ai-lab.com/vit/tutorial_tam.html) model.
-It allows cliking on a part of an image to segment, then track.
+It allows clicking on a part of an image to segment, then track.
 
 ![TAM click to track](assets/orin-TAM-select.png)
 
-Here are few examples adding a track/mask pe person:
+Here are few examples adding a track/mask per person:
 
 https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/189031/d4988a94-6525-4f43-8dff-f089b680b66d
 
@@ -352,7 +352,7 @@ while True:
         thresh = cv2.dilate(thresh, kernel, iterations = 1)
         thresh = cv2.erode(thresh, kernel, iterations = 1)
         thresh = cv2.morphologyEx(thresh, cv2.MORPH_OPEN, kernel)
-        # get external conoutrs
+        # get external contours
         contours, hierarchy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         label_txt = ""
         for cnt in contours:
@@ -361,7 +361,7 @@ while True:
             # write label in YOLO format
             # [object-class-id] [center-x] [center-y] [width] [height] -> cx, cy, w, h are normalised to image dimensions
             label_txt += f"0 {(x + w // 2) / img_w} {(y + h // 2) / img_h} {w / img_w} {h / img_h}\n"
-            # preview bounding boxe
+            # preview bounding box
             cv2.rectangle(thresh,(x,y),(x+w,y+h),(255,255,255),2)
         
         if len(contours) > 0:
@@ -414,7 +414,7 @@ yolo track model=/path/to/yolov8x-oiv7-escalators-people-detector.pt source=/pat
 
 Where the `conf` and `iou` thresholds need to be adjusted depending on the source.
 
-In some cases it might be worth masking out areas where it's ulikely people would.
+In some cases it might be worth masking out areas where it's unlikely people would walk through.
 (e.g. in case of escalators, anything outside of escalators ideally would be ignored).
 
 (For mode details see on this also check out [Learn OpenCV YOLOv8 Object Tracking and Counting with OpenCV](https://learnopencv.com/yolov8-object-tracking-and-counting-with-opencv))
@@ -488,4 +488,4 @@ Judging criteria
 
     While LED lighting based challenges are introduced, overall the goal of top down people tracking also has the challenge of handling the fast changes in scales and also shape distortions towards the edges of images.
 
-    The object detection model can hopefully be applied to other top-down people tracking challenges (such as barrier based people counting of construction site safety using camera on crane to ensure no people are in its drop path). This can also aid in motion capture where most models handle frontal, side or 3/4 views, but rarely (if at all) can handle top-down ceiling mounted cameras. Once talent can reliably be tracked top-down, pose estimation models for such tight angles can be fine tuned.
+    The object detection model can hopefully be applied to other top-down people tracking challenges (such as barrier based people counting of construction site safety using a camera on a crane to ensure no people are in its drop path). This can also aid in motion capture where most models handle frontal, side or 3/4 views, but rarely (if at all) can handle top-down ceiling mounted cameras. Once talent can reliably be tracked top-down, pose estimation models for such tight angles can be fine tuned.
