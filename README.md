@@ -77,7 +77,7 @@ This tutorial is mostly useful that have a ZED camera or would like to use the Z
 
 In general when working with cameras it's a good idea to have recordings so prototyping can happen without being blocked by access to hardware or resource to move in front of the camera often.
 
-Remember to activate virtual environment prior to running the installer if you don't the pyzed module installed globally
+Remember to activate virtual environment prior to running the installer if you don't need the pyzed module installed globally
 
 The latest version of the ZED SDK (at the time of this writing 4.0) is available [here](https://www.stereolabs.com/developers/release#82af3640d775) including for Jetson:
 
@@ -108,12 +108,13 @@ To verify:
 `python -c "import pyzed.sl as sl;print(f'cameras={sl.Camera.get_device_list()}')"`
 3. run a python sample:
     ```bash
-    #install OpenGL Python bindings
+    # install OpenGL Python bindings, required once
     pip install PyOpenGL
-    #temporarily access a python sample folder
+    # temporarily access a python sample folder
     pushd samples/depth\ sensing/depth\ sensing/python
-    #run the sample
+    # run the sample
     python depth_sensing.py
+    # after running the sample you can uses popd to return to the previous folder to switch to a new sample
     ```
 
 ![ZED Depth Viewer example display RGB, depth and point cloud data](assets/ZEDDepthViewer.png)
@@ -179,7 +180,7 @@ In this tutorial we'll look at processing pointclouds from ZED cam and using [Op
 in `zed-open3d-pointcloud` you'll find `point_cloud_utils.py` which provides a `PointCloudProcessor` class.
 The most important parts it handles:
 - holds Open3D PointCloud structures for the raw and (to be) cropped point cloud
-- keeps track of a transformation matrix (ass well as individual translation and Euler rotation): this can be useful when working with multiple cameras/point clouds that need to be merged into a single global coordinate space
+- keeps track of a transformation matrix (as well as individual translation and Euler rotation): this can be useful when working with multiple cameras/point clouds that need to be merged into a single global coordinate space
 - wraps the `cluster_dbscan` exposing both clusters and their axis aligned bounding boxes
 
 Additionally, `point_cloud_zed.py` provides `ZEDPointCloudProcessor` (which extends the above with ZED specifics and more)
@@ -188,17 +189,16 @@ The converting a ZED RGB pointcloud is a two step process:
 1. extract point coordinates
 ```py
 """
-        zed's get_data() returns a numpy array of shape (H, W, 4), dtype=np.float32
-        o3d expects a numpy array of shape (H*W,3), dtype=np.float64
+zed's get_data() returns a numpy array of shape (H, W, 4), dtype=np.float32
+o3d expects a numpy array of shape (H*W,3), dtype=np.float64
 
-        [...,:3] returns a view of the data without the last component (e.g. (H, H, 3))
-        nan_to_num cleans up the data bit: replaces nan values (copy=False means in place)
-        """
-        zed_xyzrgba = self.zed.point_cloud_np
-        zed_xyz = zed_xyzrgba[..., :3]
-        points_xyz = np.nan_to_num(zed_xyz, copy=False, nan=-1.0).reshape(self.num_pts, 3).astype(np.float64)
-        self.point_cloud_o3d.points = o3d.utility.Vector3dVector(points_xyz)
-        
+[...,:3] returns a view of the data without the last component (e.g. (H, W, 3))
+nan_to_num cleans up the data bit: replaces nan values (copy=False means in place)
+"""
+zed_xyzrgba = self.zed.point_cloud_np
+zed_xyz = zed_xyzrgba[..., :3]
+points_xyz = np.nan_to_num(zed_xyz, copy=False, nan=-1.0).reshape(self.num_pts, 3).astype(np.float64)
+self.point_cloud_o3d.points = o3d.utility.Vector3dVector(points_xyz)  
 ```
 2. extract RGB data
 ```py
@@ -268,7 +268,7 @@ Optionally you can also follow the [ZED SDK Object Detection Custom Detector YOL
 ![ZED SDK YOLOv8](assets/yolov8-zed-example.png)
 
 
-### How to prototype using the NVIDIA Generative AI on NVIDIA Jetson
+### How to prototype using the NVIDIA Generative AI models on NVIDIA Jetson
 
 [Dusty Franklin](https://github.com/dusty-nv) has provided awesome step by step guides on installing each one.
 
@@ -301,7 +301,7 @@ https://github.com/orgicus/sparkfun-nvidia-ai-innovation-challenge-2324/assets/1
 
 It's amazing these run on such small form factor hardware, however the slow framerate and reliance on initial user input isn't ideal for a responsive installation.
 
-The technique still can be very useful to save videos of masks as binary images (black background / white foreground) which can act as either a segmentation dataset, or using basic OpenCV techniques a less resource intensive object detection dataset.
+The technique still can be very useful to save videos of masks as binary images (black background / white foreground) which can act as either a segmentation dataset, or using basic OpenCV techniques, a less resource intensive object detection dataset.
 
 Here's an example script:
 
@@ -424,13 +424,13 @@ In some cases it might be worth masking out areas where it's unlikely people wou
 
 There is a larger commercial project called Infinite Dreams. 
 The full project uses 4 ZED cameras and RTX GPU. 
-I contributed the Computer Vision consulting while variable.io wrote beautiful custom generative graphics and simulations.
+I contributed the Computer Vision consulting while [variable.io](https://variable.io/) wrote beautiful custom generative graphics and simulations.
 The position of people on escalators tracked by ZED cameras acts as an input into the cloth simulation driving the realtime graphics/simulation.
 
 The above is a tutorial/guide using NVIDIA Jetson a single ZED camera.
 It demonstrates it's perfectly feasible to run the project on such device (making better use of space and especially energy).
 
-Thank you Daniel, Martin, Joanne, Adam, Ed and the full team at Hirsch & Mann for the opportunity.
+Thank you Daniel, Martin, Joanne, Adam, Ed and the full team at [Hirsch & Mann](https://hirschandmann.com/) for the opportunity.
 
 Thank you Marcin and Damien for your patience and making such beautiful work.
 
@@ -471,7 +471,7 @@ Documentation:
 Judging criteria
 
 - **Project Documentation**
-    The above shows how the project was, it includes images, screenshots, and/or a video demonstration of the solution working as intended. While
+    The above shows how the project was developed, it includes images, screenshots, and/or a video demonstration of the solution working as intended. While
     there are sections thay may need intermediate knowledge, a beginner should be to complete at least one of the 6 tutorials presented (making use of available scripts, an opensourced 15K+ object detection dataset, pretrained model, etc.)
 
 - Complete BOM
