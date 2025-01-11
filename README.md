@@ -94,7 +94,7 @@ To install:
 1. download the relevant .run file for your Jetson
 2. navigate to the folder containing it: e.g. `cd ~/Downloads`
 3. make the file executable: e.g. `chmod +x ZED_SDK_Tegra_L4T35.4_v4.0.8.zstd.run`
-4. run the installer: e.g. `./ZED_SDK_Tegra_L4T35.4_v4.0.8.zstd.run
+4. run the installer: e.g. `./ZED_SDK_Tegra_L4T35.4_v4.0.8.zstd.run`
 5. verify/accept the install paths for the required modules (e.g. ZED Hub module, AI module, samples, Python library):
     - ZED samples are very useful to get started. This can be installed on the M.2 drive to save a bit of space
     - the Python library is required for the examples to follow
